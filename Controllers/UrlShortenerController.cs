@@ -26,10 +26,10 @@ public class UrlShortenerController : ControllerBase
     [HttpGet("{UrlKey}", Name = "GetShortenedUrlByShortUrlKey")]
     public ActionResult<ShortUrl> GetShortenedUrlByShortUrlKey(string urlKey)
     {
-        var shortUrl = _urlShortener.GetShortenedUrlByShortUrlKey(urlKey);
+        ShortUrl? shortUrl = _urlShortener.GetShortenedUrlByShortUrlKey(urlKey);
         if (shortUrl != null)
         {
-            return Ok(shortUrl);
+            return Redirect(shortUrl.LongUrl);
         }
 
         return NotFound();
