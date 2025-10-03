@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // In Program.cs
 //builder.Services.AddSingleton<UrlShortener.Data.IUrlShortener, UrlShortener.Data.RedisUrlShortener>();
 builder.Services.AddScoped<IUrlShortener, RedisUrlShortener>();
+builder.Services.AddScoped<IApplyShorteningStrategy, Md5BasedUrlShorteningStrategy>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(opt => 
     ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis") ?? string.Empty));
 

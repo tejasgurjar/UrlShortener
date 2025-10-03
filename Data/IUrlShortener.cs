@@ -4,9 +4,8 @@ namespace UrlShortener.Data;
 
 public interface IUrlShortener
 {
-    void CreateShortenedUrl(ShortUrl shortUrl);
-    
+    ShortUrl CreateShortenedUrl(string longUrl);
     ShortUrl? GetShortenedUrlByShortUrlKey(string shortUrlKey);
-    
     IEnumerable<ShortUrl> GetShortenedUrls();
+    bool DeleteShortenedUrlByShortUrlKey(string shortUrlKey);
 }

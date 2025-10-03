@@ -9,12 +9,15 @@ namespace UrlShortener.Controllers;
 public class UrlShortenerController : ControllerBase
 {
     private readonly IUrlShortener _urlShortener;
+    private readonly IApplyShorteningStrategy _applyShorteningStrategy;
 
-    public UrlShortenerController(IUrlShortener urlShortener)
+    public UrlShortenerController(IUrlShortener urlShortener, IApplyShorteningStrategy urlShorteningStrategy)
     {
         _urlShortener = urlShortener;
+        _applyShorteningStrategy = urlShorteningStrategy;
     }
 
+    [HttpGet]
     public string Index()
     {
         return "My Url Shortener";
@@ -33,16 +36,22 @@ public class UrlShortenerController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<ShortUrl> CreateShortenedUrl(ShortUrl shortUrl)
+    public ActionResult<ShortUrl> CreateShortenedUrl(Url url)
     {
-        _urlShortener.CreateShortenedUrl(shortUrl);
-        return CreatedAtRoute(nameof(GetShortenedUrlByShortUrlKey),
-            new
-            {
-                UrlKey = shortUrl.UrlKey,
-                OriginalUrl = shortUrl.OriginalUrl,
-                ShortenedUrl = shortUrl.ShortenedUrl
-            },
-            shortUrl);
+       ShortUrl shortUrl = _urlShortener.CreateShortenedUrl(url.LongUrl);
+       return CreatedAtRoute(nameof(GetShortenedUrlByShortUrlKey),
+           new 
+           { 
+               UrlKey = shortUrl.UrlKey, 
+               LongUrl = shortUrl.LongUrl, 
+               ShortUrl = shortUrl.ShortenedUrl 
+           }, 
+           shortUrl);
+    }
+    
+    [HttpDelete("{UrlKey}", Name = "DeleteShortenedUrlByShortUrlKey")]
+    public ActionResult<HttpResponseMessage> DeleteShortenedUrlByShortUrlKey(string urlKey)
+    {
+        return _urlShortener.DeleteShortenedUrlByShortUrlKey(urlKey) ? Ok(): NotFound();
     }
 }

@@ -7,7 +7,7 @@ public class ShortUrl
     [Required]
     public required string UrlKey { get; set; }
     [Required]
-    public required string OriginalUrl { get; set; }
+    public required string LongUrl { get; set; }
     [Required]
     public required string ShortenedUrl { get; set; }
 }
