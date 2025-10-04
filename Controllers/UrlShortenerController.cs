@@ -35,6 +35,7 @@ public class UrlShortenerController : ControllerBase
         return NotFound();
     }
 
+    //[ValidateAntiForgeryToken]
     [HttpPost]
     public ActionResult<ShortUrl> CreateShortenedUrl(Url url)
     {

@@ -1,5 +1,4 @@
-using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis;
 using StackExchange.Redis.Extensions.System.Text.Json;
 using StackExchange.Redis.Extensions.Core.Configuration;
@@ -10,11 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddSingleton<UrlShortener.Data.IUrlShortener, UrlShortener.Data.RedisUrlShortener>();
 builder.Services.AddScoped<IUrlShortener, RedisUrlShortener>();
 builder.Services.AddScoped<IApplyShorteningStrategy, Md5BasedUrlShorteningStrategy>();
-builder.Services.AddSingleton<IConnectionMultiplexer>(opt => 
+builder.Services.AddSingleton<ValidateAntiForgeryTokenAttribute>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ => 
     ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis") ?? string.Empty));
 
 // Add services to the container.
-builder.Services.AddControllers();
+
+// Without AddControllersWithViews(), we get an error stating that the ValidateAntiForgeryTokenAuthorizationFilter service
+// was not registered
+builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddStackExchangeRedisExtensions<SystemTextJsonSerializer>(new RedisConfiguration()
 {
